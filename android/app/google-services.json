@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1036910535170",
+    "project_id": "idexapp-9d3de",
+    "storage_bucket": "idexapp-9d3de.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036910535170:android:8907542636a23aeb833d1b",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHWq9ue4mPOoYMBOFAD-PgRAcN5q6aRBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
