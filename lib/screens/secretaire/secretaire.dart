@@ -4,8 +4,6 @@ import 'package:frontend/models/event_model.dart';
 import 'package:frontend/common_pages/fiche_inscription.dart';
 import 'package:frontend/screens/secretaire/pages/demandes.dart';
 import 'package:frontend/screens/secretaire/pages/emploie_dutemps.dart';
-import 'package:frontend/screens/secretaire/pages/notifications.dart';
-import 'package:frontend/screens/secretaire/pages/parametre.dart';
 import 'package:frontend/widgets/dashboardItem.dart';
 import 'package:frontend/widgets/feature_card.dart';
 import 'package:frontend/widgets/side_bar.dart';
@@ -74,6 +72,11 @@ class _SecretaireHomeState extends State<SecretaireHome> {
           });
         }
       }
+    } catch (e) {
+      debugPrint('Erreur recuperations evenements: $e');
+    }
+
+    try{
 
       final querySnapshot2 =
           await FirebaseFirestore.instance.collection('demandes_secretaire')
@@ -83,7 +86,7 @@ class _SecretaireHomeState extends State<SecretaireHome> {
 
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur recuperations demandes envoyé a la secretaire: $e');
     }
   }
 

@@ -1,18 +1,13 @@
 import 'package:frontend/models/event_model.dart';
 import 'package:frontend/utils/utils.dart';
-import 'package:frontend/widgets/calandrier_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/firebase/controlers/controler.dart';
-import 'package:frontend/models/cours_model.dart';
-import 'package:frontend/models/etudiant_model.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/widgets/side_bar.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
-// import 'package:flutter/rendering.dart';
 
 class EmploiDuTemps extends StatelessWidget {
   Widget home;
@@ -47,31 +42,12 @@ class EmploiDuTempsHome extends ConsumerStatefulWidget {
 
 class _EmploiDuTempsHomeState extends ConsumerState<EmploiDuTempsHome> {
   List<EventModel> events = <EventModel>[];
-  // List<String> absents = [];
-  // final _formKey = GlobalKey<FormState>();
-  // String? selectedPaymentMethod;
-  // String? selectedDesignation;
-  // DateTime selectedDate = DateTime.now();
-  // TimeOfDay selectedTimeStart = TimeOfDay.now();
-  // TimeOfDay selectedTimeEnd = TimeOfDay.now();
-  // TextEditingController descriptionController = TextEditingController(text: "");
-  // double progression = 0;
-  // TextEditingController nbSemaineController = TextEditingController(text: "1");
-  // bool repetition = false;
-  // final TextEditingController designationController = TextEditingController();
-  // late CoursModel coursModel;
-  // EtudiantModel? etudiantModel;
-  // List<String> designationList = [];
   late Color dialogPickerColor;
-  // Color for picker using the color select dialog.
-  // late Color dialogSelectColor;
 
   @override
   void initState() {
     super.initState();
-    // screenPickerColor = Colors.blue;  // Material blue.
-    dialogPickerColor = Colors.green; // Material red.
-    // dialogSelectColor = const Color(0xFFA239CA); // A purple color.
+    dialogPickerColor = Colors.green;
   }
 
   // @override
@@ -91,7 +67,7 @@ class _EmploiDuTempsHomeState extends ConsumerState<EmploiDuTempsHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
   }
 
@@ -167,10 +143,13 @@ class _EmploiDuTempsHomeState extends ConsumerState<EmploiDuTempsHome> {
                         TextButton(
                           onPressed: () {},
                           style: const ButtonStyle(
-                              fixedSize: WidgetStatePropertyAll(Size(200, 30)),
-                              shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                      side: BorderSide(width: 1)))),
+                            fixedSize: WidgetStatePropertyAll(Size(200, 30)),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                side: BorderSide(width: 1),
+                              ),
+                            ),
+                          ),
                           child: const Row(
                             children: [
                               Icon(
@@ -221,16 +200,9 @@ class _EmploiDuTempsHomeState extends ConsumerState<EmploiDuTempsHome> {
               child: CalandarSecretaire(
                 evens: events,
                 onTap: (calendarTapDetails) {
-                  ajouterModifierEvenement(calendarTapDetails: calendarTapDetails);
-                  // showDialog(
-                  //     context: context,
-                  //     builder: (context) {
-                  //       return AlertDialog(
-                  //           title: Text(calendarTapDetails
-                  //               .appointments!.first.eventName),
-                  //           content: 
-                  //         );
-                  //     });
+                  ajouterModifierEvenement(
+                    calendarTapDetails: calendarTapDetails,
+                  );
                 },
               ),
             ),
@@ -240,221 +212,233 @@ class _EmploiDuTempsHomeState extends ConsumerState<EmploiDuTempsHome> {
     );
   }
 
-  void ajouterModifierEvenement({CalendarTapDetails? calendarTapDetails}) async {
-    final _formKey = GlobalKey<FormState>();
-    DateTime selectedDate = calendarTapDetails==null
-      ? DateTime.now() : calendarTapDetails.appointments!.first.from;
-    TimeOfDay selectedTimeStart = calendarTapDetails==null 
-      ? TimeOfDay.now()
-      : TimeOfDay.fromDateTime(calendarTapDetails.appointments!.first.from);
-    TimeOfDay selectedTimeEnd = calendarTapDetails==null 
-      ? TimeOfDay.now()
-      : TimeOfDay.fromDateTime(calendarTapDetails.appointments!.first.to);
-    TextEditingController descriptionController =
-        TextEditingController(text: calendarTapDetails==null ? "" 
-          : calendarTapDetails.appointments!.first.eventName);
+  void ajouterModifierEvenement(
+      {CalendarTapDetails? calendarTapDetails}) async {
+    final formKey = GlobalKey<FormState>();
+    DateTime selectedDate = calendarTapDetails == null
+        ? DateTime.now()
+        : calendarTapDetails.appointments!.first.from;
+    TimeOfDay selectedTimeStart = calendarTapDetails == null
+        ? TimeOfDay.now()
+        : TimeOfDay.fromDateTime(calendarTapDetails.appointments!.first.from);
+    TimeOfDay selectedTimeEnd = calendarTapDetails == null
+        ? TimeOfDay.now()
+        : TimeOfDay.fromDateTime(calendarTapDetails.appointments!.first.to);
+    TextEditingController descriptionController = TextEditingController(
+        text: calendarTapDetails == null
+            ? ""
+            : calendarTapDetails.appointments!.first.eventName);
 
     showDialog(
       context: context,
       builder: (context) {
         return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setModalState) {
-            return AlertDialog(
-              title: calendarTapDetails==null 
+            builder: (BuildContext context, StateSetter setModalState) {
+          return AlertDialog(
+            title: calendarTapDetails == null
                 ? const Text("Ajouter un Événement")
                 : Text(calendarTapDetails.appointments!.first.eventName),
-              content: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: descriptionController,
-                      validator: validationNotNull,
-                      maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: 'Déscription',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(),
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 10),
+                  TextFormField(
+                    controller: descriptionController,
+                    validator: validationNotNull,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      labelText: 'Déscription',
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                      labelStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(),
+                    ),
+                    readOnly: true,
+                    controller: TextEditingController(
+                      text: selectedDate.toString().split(' ')[0],
+                    ),
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: selectedDate,
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (pickedDate != null) {
+                        setModalState(() {
+                          selectedDate = pickedDate;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Démarre à',
+                            border: OutlineInputBorder(),
+                          ),
+                          readOnly: true,
+                          controller: TextEditingController(
+                              text: selectedTimeStart.format(context)),
+                          onTap: () async {
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (pickedTime != null) {
+                              setModalState(() {
+                                selectedTimeStart = pickedTime;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Arréte à',
+                            border: OutlineInputBorder(),
+                          ),
+                          readOnly: true,
+                          controller: TextEditingController(
+                              text: selectedTimeEnd.format(context)),
+                          onTap: () async {
+                            TimeOfDay? pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (pickedTime != null) {
+                              setModalState(() {
+                                selectedTimeEnd = pickedTime;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: colorPickerDialog,
+                    style: ButtonStyle(
+                      fixedSize: const WidgetStatePropertyAll(Size(180, 30)),
+                      backgroundColor: WidgetStatePropertyAll(
+                        calendarTapDetails == null
+                            ? dialogPickerColor
+                            : calendarTapDetails.appointments!.first.background,
+                      ),
+                      shape: const WidgetStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Date',
-                        labelStyle: TextStyle(color: Colors.grey),
-                        border: OutlineInputBorder(),
-                      ),
-                      readOnly: true,
-                      controller: TextEditingController(
-                        text: selectedDate.toString().split(' ')[0],
-                      ),
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: selectedDate,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2101),
-                        );
-                        if (pickedDate != null) {
-                          setModalState(() {
-                            selectedDate = pickedDate;
-                          });
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
+                    child: const Row(
                       children: [
-                        Expanded(
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Démarre à',
-                              border: OutlineInputBorder(),
-                            ),
-                            readOnly: true,
-                            controller: TextEditingController(
-                                text: selectedTimeStart.format(context)),
-                            onTap: () async {
-                              TimeOfDay? pickedTime = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                              );
-                              if (pickedTime != null) {
-                                setModalState(() {
-                                  selectedTimeStart = pickedTime;
-                                });
-                              }
-                            },
-                          ),
+                        Icon(
+                          Icons.add,
+                          color: Colors.black,
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Arréte à',
-                              border: OutlineInputBorder(),
-                            ),
-                            readOnly: true,
-                            controller: TextEditingController(
-                                text: selectedTimeEnd.format(context)),
-                            onTap: () async {
-                              TimeOfDay? pickedTime = await showTimePicker(
-                                context: context,
-                                initialTime: TimeOfDay.now(),
-                              );
-                              if (pickedTime != null) {
-                                setModalState(() {
-                                  selectedTimeEnd = pickedTime;
-                                });
-                              }
-                            },
-                          ),
-                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "Ajouter une couleur",
+                          style: TextStyle(color: Colors.black),
+                        )
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: colorPickerDialog,
-                      style: ButtonStyle(
-                        fixedSize: const WidgetStatePropertyAll(Size(180, 30)),
-                        backgroundColor: WidgetStatePropertyAll(
-                          calendarTapDetails==null ? dialogPickerColor 
-                            : calendarTapDetails.appointments!.first.background,
-                          ),
-                        shape: const WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                              // side: BorderSide(width: 1),
-                              borderRadius: BorderRadius.all(Radius.circular(10),),),
-                        ),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.add,
-                            color: Colors.black,
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            "Ajouter une couleur",
-                            style: TextStyle(color: Colors.black),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              actions: [
-                if(calendarTapDetails!=null)
-                  TextButton(
-                    onPressed: () async {
-                      setState(() {
-                        events.removeWhere((e) => e.idEvent == calendarTapDetails.appointments!.first.idEvent);
-                      });
-                      await FirebaseFirestore.instance
+            ),
+            actions: [
+              if (calendarTapDetails != null)
+                TextButton(
+                  onPressed: () async {
+                    setState(() {
+                      events.removeWhere((e) =>
+                          e.idEvent ==
+                          calendarTapDetails.appointments!.first.idEvent);
+                    });
+                    await FirebaseFirestore.instance
                         .collection('events')
                         .doc(calendarTapDetails.appointments!.first.idEvent)
                         .delete();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Événement Supprimé")),
-                      );
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Supprimer', style: TextStyle(color: Colors.redAccent),),
-                  ),
-                TextButton(
-                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Événement Supprimé")),
+                    );
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Annuler'),
+                  child: const Text(
+                    'Supprimer',
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
                 ),
-                TextButton(
-                  onPressed: () async {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      EventModel eventModel = EventModel(
-                        idEvent: calendarTapDetails==null 
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Annuler'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (formKey.currentState?.validate() ?? false) {
+                    EventModel eventModel = EventModel(
+                      idEvent: calendarTapDetails == null
                           ? generateIdStudent('EV', 5)
                           : calendarTapDetails.appointments!.first.idEvent,
-                        eventName: descriptionController.text,
-                        from: selectedDate.add(Duration(
-                          hours: selectedTimeStart.hour,
-                          minutes: selectedTimeStart.minute,
-                        )),
-                        to: selectedDate.add(Duration(
-                          hours: selectedTimeEnd.hour,
-                          minutes: selectedTimeEnd.minute,
-                        )),
-                        background: dialogPickerColor,
-                      );
-                      if (calendarTapDetails!=null) {
-                        setState(() {
-                          events.removeWhere((e) => e.idEvent == calendarTapDetails.appointments!.first.idEvent);
-                        });
-                      }
+                      eventName: descriptionController.text,
+                      from: selectedDate.add(Duration(
+                        hours: selectedTimeStart.hour,
+                        minutes: selectedTimeStart.minute,
+                      )),
+                      to: selectedDate.add(Duration(
+                        hours: selectedTimeEnd.hour,
+                        minutes: selectedTimeEnd.minute,
+                      )),
+                      background: dialogPickerColor,
+                    );
+                    if (calendarTapDetails != null) {
                       setState(() {
-                        events.add(eventModel);
+                        events.removeWhere((e) =>
+                            e.idEvent ==
+                            calendarTapDetails.appointments!.first.idEvent);
                       });
-            
-                      await FirebaseFirestore.instance
-                          .collection('events')
-                          .doc(eventModel.idEvent)
-                          .set(eventModel.toMap());
-                          
-                      Navigator.of(context).pop();
-            
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Événement ajouté")),
-                      );
                     }
-                  },
-                  child: const Text('Confirmer'),
-                ),
-              ],
-            );
-          }
-        );
+                    setState(() {
+                      events.add(eventModel);
+                    });
+
+                    await FirebaseFirestore.instance
+                        .collection('events')
+                        .doc(eventModel.idEvent)
+                        .set(eventModel.toMap());
+
+                    Navigator.of(context).pop();
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Événement ajouté")),
+                    );
+                  }
+                },
+                child: const Text('Confirmer'),
+              ),
+            ],
+          );
+        });
       },
     );
   }

@@ -1,10 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-
-import 'package:frontend/utils/utils.dart';
 
 class CoursModel {
   String id;

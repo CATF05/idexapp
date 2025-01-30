@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/etudiant_model.dart';
 
 
 class EtudiantProfilWidget extends StatelessWidget {

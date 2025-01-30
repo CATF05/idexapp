@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/data_sources/profs_data_source.dart';
 import 'package:frontend/firebase/controlers/controler.dart';
 import 'package:frontend/models/prof_model.dart';
-import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/nav_helper.dart';
@@ -14,6 +13,7 @@ import 'package:frontend/widgets/sort_icon.dart';
 import 'package:sidebarx/sidebarx.dart';
 // import 'package:flutter/rendering.dart';
 
+// ignore: must_be_immutable
 class ProfsScreen extends StatelessWidget {
   Widget home;
   ProfsScreen({super.key, required this.home});
@@ -75,7 +75,7 @@ class _ProfsHomeState extends ConsumerState<ProfsHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
   }
 
@@ -142,11 +142,15 @@ class _ProfsHomeState extends ConsumerState<ProfsHome> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: AjouterProf,
+                  onPressed: ajouterProf,
                   style: const ButtonStyle(
-                      fixedSize: WidgetStatePropertyAll(Size(200, 45)),
-                      shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(side: BorderSide(width: 1)))),
+                    fixedSize: WidgetStatePropertyAll(Size(200, 45)),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        side: BorderSide(width: 1),
+                      ),
+                    ),
+                  ),
                   child: const Row(
                     children: [
                       Icon(
@@ -313,8 +317,8 @@ class _ProfsHomeState extends ConsumerState<ProfsHome> {
     );
   }
 
-  void AjouterProf() async {
-    final _formKey = GlobalKey<FormState>();
+  void ajouterProf() async {
+    final formKey = GlobalKey<FormState>();
     TextEditingController nomController = TextEditingController();
     TextEditingController emailController = TextEditingController();
     TextEditingController telephoneController = TextEditingController();
@@ -326,7 +330,7 @@ class _ProfsHomeState extends ConsumerState<ProfsHome> {
         return AlertDialog(
           title: const Text("Ajouter un Cours"),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -378,7 +382,7 @@ class _ProfsHomeState extends ConsumerState<ProfsHome> {
             ),
             TextButton(
               onPressed: () async {
-                if (_formKey.currentState?.validate() ?? false) {
+                if (formKey.currentState?.validate() ?? false) {
                   ProfModel profModel = ProfModel(
                     idProf: generateIdStudent("P0", 3),
                     nom: nomController.text,
@@ -393,11 +397,10 @@ class _ProfsHomeState extends ConsumerState<ProfsHome> {
                   });
 
                   Navigator.of(context).pop();
-                  
+
                   await ref
                       .watch(profsControllerProvider.notifier)
                       .addProf(profModel, context);
-
                 }
               },
               child: const Text('Confirmer'),

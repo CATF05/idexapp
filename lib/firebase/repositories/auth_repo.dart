@@ -1,14 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/firebase/provider/firebase_provider.dart';
 import 'package:frontend/models/user_model.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:frontend/utils/utils.dart';
 
 
 final authRepositoryProvider = Provider(
@@ -29,8 +24,6 @@ class AuthRepository {
         _firestore = firestore;
   
   CollectionReference get _users => _firestore.collection("admins");
-  // CollectionReference get _compteurs => _firestore.collection(FirebaseConstants.compteursCollection);
-  // CollectionReference get _cartes => _firestore.collection(FirebaseConstants.cartesCollection);
 
   Stream<User?> get authStateChange => _auth.authStateChanges();
 

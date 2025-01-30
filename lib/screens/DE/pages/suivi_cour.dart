@@ -1,24 +1,13 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:increment_decrement_form_field/increment_decrement_form_field.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/firebase/controlers/controler.dart';
 import 'package:frontend/models/cours_model.dart';
-import 'package:frontend/models/etudiant_model.dart';
-import 'package:frontend/models/facture_model.dart';
-import 'package:frontend/screens/DG/dg_screen.dart';
-import 'package:frontend/common_pages/sauvegarde_pdf.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/side_bar.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
 import 'package:sidebarx/sidebarx.dart';
 // import 'package:flutter/rendering.dart';
 

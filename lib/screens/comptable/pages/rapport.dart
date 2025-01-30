@@ -201,11 +201,4 @@ class _RapportPageHomeState extends State<RapportPageHome> {
       });
     }
   }
-
-  void _exportReport() {
-    // Logique d'exportation en PDF ou Excel
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Rapport exporté avec succès")),
-    );
-  }
 }

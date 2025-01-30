@@ -8,7 +8,6 @@ import 'package:frontend/models/etudiant_model.dart';
 import 'package:frontend/models/facture_model.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/utils/constants.dart';
-import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/side_bar.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';

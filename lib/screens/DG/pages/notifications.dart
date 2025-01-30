@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/data_sources/demande_data_source.dart';
-import 'package:frontend/firebase/sync_demande.dart';
 import 'package:frontend/models/demande_inscription_model.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/utils/constants.dart';
@@ -76,7 +75,7 @@ class _NotificationsDGScreenHomeState extends State<NotificationsDGScreenHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
   }
 

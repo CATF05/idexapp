@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/firebase/controlers/auth_controler.dart';
 import 'package:frontend/models/user_model.dart';
 import 'package:frontend/screens/DE/de_screen.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
@@ -44,7 +43,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       try {
         // Authentification avec Firebase Auth
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );

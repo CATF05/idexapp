@@ -1,15 +1,10 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/firebase/controlers/controler.dart';
-import 'package:frontend/models/classe_model.dart';
 import 'package:frontend/models/cours_model.dart';
-import 'package:frontend/models/emploi_du_temps.dart';
 import 'package:frontend/models/etudiant_model.dart';
-import 'package:frontend/models/facture_model.dart';
 import 'package:frontend/models/prof_model.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/common_pages/sauvegarde_pdf.dart';
@@ -376,7 +371,7 @@ class _ProfViewHomeState extends ConsumerState<ProfViewHome>
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
     
     for (var c in cours) {

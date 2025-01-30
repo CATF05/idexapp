@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
-import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -1487,17 +1486,3 @@ class TableExample extends StatelessWidget {
     );
   }
 }
-
-
-// class Paiement {
-//   String description;
-//   int montantAPayer;
-//   int montantDejaPayer;
-//   String dernierDelais;
-//   Paiement({
-//     required this.description,
-//     required this.montantAPayer,
-//     required this.montantDejaPayer,
-//     required this.dernierDelais,
-//   });
-// }

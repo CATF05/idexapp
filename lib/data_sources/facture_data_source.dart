@@ -11,7 +11,7 @@ import 'package:frontend/common_pages/facture_view.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
-import 'package:frontend/widgets/actions_widget.dart';
+
 
 class FactureDataSource extends DataTableSource {
   FactureDataSource.empty(this.context) {
@@ -133,13 +133,12 @@ class _ActionsWidgetState extends ConsumerState<ActionsFacture> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchUserData();
   }
 
   void fetchUserData() async {
-    final currentUser = await FirebaseAuth.instance.currentUser;
+    final currentUser = FirebaseAuth.instance.currentUser;
     final querySnapshot = await FirebaseFirestore.instance
         .collection('admins')
         .doc(currentUser!.uid)

@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_pages/students.dart';
-import 'package:frontend/screens/DE/pages/attestation.dart';
-import 'package:frontend/screens/DE/pages/certification.dart';
 import 'package:frontend/screens/DE/pages/gestion_cours.dart';
-import 'package:frontend/screens/DE/pages/notifications.dart';
-import 'package:frontend/screens/DE/pages/parametre.dart';
-import 'package:frontend/screens/DE/pages/planification.dart';
-import 'package:frontend/screens/DE/pages/rapport_academique.dart';
-import 'package:frontend/screens/DE/pages/bulletin_releves.dart';
 import 'package:frontend/screens/DG/pages/profs.dart';
 import 'package:frontend/widgets/feature_card.dart';
 import 'package:frontend/widgets/side_bar.dart';
@@ -25,7 +18,7 @@ class DirecteurEtudesScreen extends StatelessWidget {
       body: Row(
         children: [
           ExampleSidebarX(controller: _controller, home: DirecteurEtudesScreen(),),
-          Expanded(
+          const Expanded(
             child: DirEtudeHome(),
           ),
         ],

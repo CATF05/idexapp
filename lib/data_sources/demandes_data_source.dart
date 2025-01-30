@@ -119,13 +119,12 @@ class _ActionsDemandesState extends ConsumerState<ActionsDemandes> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchUserData();
   }
 
   void fetchUserData() async {
-    final currentUser = await FirebaseAuth.instance.currentUser;
+    final currentUser =  FirebaseAuth.instance.currentUser;
     final querySnapshot = await FirebaseFirestore.instance
         .collection('admins')
         .doc(currentUser!.uid)

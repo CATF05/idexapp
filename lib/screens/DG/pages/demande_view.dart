@@ -43,8 +43,6 @@ class DemandeViewHome extends ConsumerStatefulWidget {
 }
 
 class _DemandeViewHomeState extends ConsumerState<DemandeViewHome> {
-  // final _formKey = GlobalKey<FormState>();
-  final List<bool> _selectedPage = <bool>[true, false, false];
   late DemandeInscription demandeInscription;
 
   @override

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common_pages/fiche_inscription.dart';
-import 'package:frontend/screens/DE/de_screen.dart';
 import 'package:frontend/screens/DE/pages/gestion_cours.dart';
 import 'package:frontend/screens/surveillant/pages/evenements.dart';
-import 'package:frontend/screens/surveillant/pages/notifications.dart';
-import 'package:frontend/screens/surveillant/pages/parametre.dart';
 import 'package:frontend/widgets/feature_card.dart';
 import 'package:frontend/widgets/side_bar.dart';
 import 'package:sidebarx/sidebarx.dart';
@@ -148,35 +145,6 @@ class _SurveillantHomeState extends State<SurveillantHome> {
         ),
       ),
     );
-
-
-    // return AnimatedBuilder(
-    //   animation: widget.controller,
-    //   builder: (context, child) {
-    //     switch (widget.controller.selectedIndex) {
-    //       case 0:
-    //         return home(context, widget.controller);
-    //       case 1:
-    //         return const NotificationsSurveillant();
-    //       case 2:
-    //         return const ParametreSurveillant();
-    //       case 4:
-    //         return Container(); // Gestion des Présences
-    //       case 5:
-    //         return Container(); // Gestion des Salles
-    //       case 6:
-    //         return Container(); // Rapports
-    //       case 7:
-    //         return Container(); // Suivi des Événements
-    //       case 8:
-    //         return Container(); // Enregistrement des Étudiants
-    //       case 9:
-    //         return Container(); // Création des Badges
-    //       default:
-    //         return home(context, widget.controller);
-    //     }
-    //   },
-    // );
   }
 
   // Tableau de bord avec les informations clés du surveillant

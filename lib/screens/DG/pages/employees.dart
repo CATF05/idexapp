@@ -3,7 +3,6 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/data_sources/employes_data_source.dart';
 import 'package:frontend/models/employe_model.dart';
-import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/nav_helper.dart';
@@ -71,7 +70,7 @@ class _EmployesScreenHomeState extends State<EmployesScreenHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
   }
 
@@ -138,7 +137,7 @@ class _EmployesScreenHomeState extends State<EmployesScreenHome> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: AjouterEmploye,
+                  onPressed: ajouterEmploye,
                   style: const ButtonStyle(
                       fixedSize: WidgetStatePropertyAll(Size(200, 45)),
                       shape: WidgetStatePropertyAll(
@@ -309,8 +308,8 @@ class _EmployesScreenHomeState extends State<EmployesScreenHome> {
     );
   }
 
-  void AjouterEmploye() async {
-    final _formKey = GlobalKey<FormState>();
+  void ajouterEmploye() async {
+    final formKey = GlobalKey<FormState>();
     TextEditingController nomController = TextEditingController();
     TextEditingController emailController = TextEditingController();
     TextEditingController telephoneController = TextEditingController();
@@ -323,7 +322,7 @@ class _EmployesScreenHomeState extends State<EmployesScreenHome> {
         return AlertDialog(
           title: const Text("Ajouter un Cours"),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -384,7 +383,7 @@ class _EmployesScreenHomeState extends State<EmployesScreenHome> {
             ),
             TextButton(
               onPressed: () async {
-                if (_formKey.currentState?.validate() ?? false) {
+                if (formKey.currentState?.validate() ?? false) {
                   EmployeModel employeModel = EmployeModel(
                     idEmploye: generateIdStudent("EM", 4),
                     nom: nomController.text,

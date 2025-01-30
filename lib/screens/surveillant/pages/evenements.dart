@@ -1,25 +1,12 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:frontend/models/emploi_du_temps.dart';
 import 'package:frontend/widgets/calandrier_widget.dart';
-import 'package:percent_indicator/percent_indicator.dart';
-import 'package:increment_decrement_form_field/increment_decrement_form_field.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/firebase/controlers/controler.dart';
 import 'package:frontend/models/cours_model.dart';
 import 'package:frontend/models/etudiant_model.dart';
-import 'package:frontend/models/facture_model.dart';
-import 'package:frontend/screens/DG/dg_screen.dart';
-import 'package:frontend/common_pages/sauvegarde_pdf.dart';
 import 'package:frontend/utils/constants.dart';
-import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/side_bar.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:printing/printing.dart';
 import 'package:sidebarx/sidebarx.dart';
 // import 'package:flutter/rendering.dart';
 
@@ -58,20 +45,6 @@ class EvenementsHome extends ConsumerStatefulWidget {
 class _EvenementsHomeState extends ConsumerState<EvenementsHome> {
   List<Evenement> events = <Evenement>[];
   List<String> absents = [];
-  // final _formKey = GlobalKey<FormState>();
-  // String? selectedPaymentMethod;
-  // String? selectedDesignation;
-  // DateTime selectedDate = DateTime.now();
-  // TimeOfDay selectedTimeStart = TimeOfDay.now();
-  // TimeOfDay selectedTimeEnd = TimeOfDay.now();
-  // TextEditingController descriptionController = TextEditingController(text: "");
-  // double progression = 0;
-  // TextEditingController nbSemaineController = TextEditingController(text: "1");
-  // bool repetition = false;
-  // final TextEditingController designationController = TextEditingController();
-  // late CoursModel coursModel;
-  // EtudiantModel? etudiantModel;
-  // List<String> designationList = [];
 
   // @override
   // void initState() {
@@ -91,7 +64,7 @@ class _EvenementsHomeState extends ConsumerState<EvenementsHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur recuperations cours: $e');
     }
 
     for (var c in cours) {
@@ -308,8 +281,7 @@ class _EvenementsHomeState extends ConsumerState<EvenementsHome> {
                       setState(() {}); // Met à jour la liste principale
                     },
                   ),
-                  // const SizedBox(height: 8),
-                  Divider(),
+                  const Divider(),
                   Expanded(
                     child: ListView.builder(
                       itemCount: etudiants.length,

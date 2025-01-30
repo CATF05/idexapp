@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
@@ -12,8 +11,6 @@ final userProvider = StateProvider<UserModel?>((ref) => null);
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) => AuthController(
     authRepository: ref.watch(authRepositoryProvider),
-    // storageRepository: ref.watch(storageRepositoryProvider),
-    ref: ref,
   ),
 );
 
@@ -29,16 +26,10 @@ final getUserDataProvider = StreamProvider.family((ref, String uid) {
 
 class AuthController extends StateNotifier<bool> {
   final AuthRepository _authRepository;
-  // final StorageRepository _storageRepository;
-  final Ref _ref;
   AuthController({
-    required AuthRepository authRepository, 
-    // required StorageRepository storageRepository,
-    required Ref ref
+    required AuthRepository authRepository,
   })
       : _authRepository = authRepository,
-        // _storageRepository = storageRepository,
-        _ref = ref,
         super(false);
 
   Stream<User?> get authStateChange => _authRepository.authStateChange;
@@ -46,10 +37,6 @@ class AuthController extends StateNotifier<bool> {
   Future signInWithEmailAndPassword(BuildContext context, String email, String password) async {
     final user = await _authRepository.signInWithEmailAndPassword(email, password);
     state = false;
-    // user.fold(
-    //   (l) => showSnackBar(context, l.message),
-    //   (userM) => _ref.read(userProvider.notifier).update((state) => userM),
-    // );
     return user;
   }
 

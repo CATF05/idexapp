@@ -1,21 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/firebase/controlers/controler.dart';
 import 'package:frontend/models/demande_inscription_model.dart';
-import 'package:frontend/models/user_model.dart';
-import 'package:frontend/common_pages/facture_view.dart';
 import 'package:frontend/models/etudiant_model.dart';
-import 'package:frontend/models/facture_model.dart';
-import 'package:frontend/common_pages/student_view.dart';
-import 'package:frontend/common_pages/students.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/screens/DG/pages/demande_view.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
-import 'package:frontend/widgets/actions_widget.dart';
 
 
 

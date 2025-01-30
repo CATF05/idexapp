@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/transaction_model.dart';
-import 'package:frontend/screens/comptable/account_screen.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/dashboardItem.dart';
 import 'package:frontend/widgets/side_bar.dart';
-import 'package:intl/intl.dart';
 import 'package:sidebarx/sidebarx.dart';
 
 class TransactionPage extends StatelessWidget {
@@ -65,7 +63,7 @@ class _TransactionPageHomeState extends State<TransactionPageHome> {
         });
       }
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
   }
 
@@ -178,7 +176,7 @@ class _TransactionPageHomeState extends State<TransactionPageHome> {
   }
 
   void _addTransaction() {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     String? type;
     String? paymentMethod;
     TextEditingController amountController = TextEditingController();
@@ -192,7 +190,7 @@ class _TransactionPageHomeState extends State<TransactionPageHome> {
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -289,7 +287,7 @@ class _TransactionPageHomeState extends State<TransactionPageHome> {
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
+                        if (formKey.currentState?.validate() ?? false) {
                           TransactionModel transactionModel = TransactionModel(
                             idTransaction: generateIdStudent('TR', 5),
                             type: type!,

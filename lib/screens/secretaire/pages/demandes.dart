@@ -3,9 +3,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/data_sources/demandes_data_source.dart';
-import 'package:frontend/firebase/controlers/controler.dart';
 import 'package:frontend/models/demande_model.dart';
-import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:frontend/utils/utils.dart';
 import 'package:frontend/widgets/nav_helper.dart';
@@ -75,7 +73,7 @@ class _DemandesHomeState extends ConsumerState<DemandesHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur recuperations demandes envoyé a la secretaire: $e');
     }
   }
 
@@ -324,7 +322,7 @@ class _DemandesHomeState extends ConsumerState<DemandesHome> {
   }
 
   void ajouterDemande() async {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     DateTime selectedDate = DateTime.now();
     TextEditingController demandeurController = TextEditingController();
     TextEditingController objetController = TextEditingController();
@@ -336,7 +334,7 @@ class _DemandesHomeState extends ConsumerState<DemandesHome> {
         return AlertDialog(
           title: const Text("Ajouter une Demande"),
           content: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -405,7 +403,7 @@ class _DemandesHomeState extends ConsumerState<DemandesHome> {
             ),
             TextButton(
               onPressed: () async {
-                if (_formKey.currentState?.validate() ?? false) {
+                if (formKey.currentState?.validate() ?? false) {
                   DemandeModel demandeModel = DemandeModel(
                     idDemande: generateIdStudent("D", 4),
                     demandeur: demandeurController.text,

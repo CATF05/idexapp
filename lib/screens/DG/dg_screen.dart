@@ -118,7 +118,7 @@ class _DirGeneralHomeState extends State<DirGeneralHome> {
         nbEmployees = querySnapshot4.docs.length;
       });
     } catch (e) {
-      print('Erreur recupération employes: $e');
+      debugPrint('Erreur recupération employes: $e');
     }
   }
 

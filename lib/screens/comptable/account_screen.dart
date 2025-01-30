@@ -1,16 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common_pages/students.dart';
-import 'package:frontend/models/admins_model.dart';
-import 'package:frontend/models/employe_model.dart';
 import 'package:frontend/models/etudiant_model.dart';
 import 'package:frontend/models/facture_model.dart';
 import 'package:frontend/models/paiment_model.dart';
-import 'package:frontend/models/prof_model.dart';
 import 'package:frontend/common_pages/factures.dart';
-import 'package:frontend/screens/comptable/pages/notifications.dart';
 import 'package:frontend/screens/comptable/pages/paiement.dart';
-import 'package:frontend/screens/comptable/pages/parametre.dart';
 import 'package:frontend/screens/comptable/pages/rapport.dart';
 import 'package:frontend/screens/comptable/pages/transactions.dart';
 import 'package:frontend/common_pages/fiche_inscription.dart';
@@ -93,7 +88,7 @@ class _AccountHomeState extends State<AccountHome> {
       }
       setState(() {});
     } catch (e) {
-      print('Erreur: $e');
+      debugPrint('Erreur: $e');
     }
   }
 

@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/employe_model.dart';
-import 'package:frontend/models/employe_model.dart';
 import 'package:frontend/models/user_model.dart';
-import 'package:frontend/screens/DE/de_screen.dart';
 import 'package:frontend/screens/DG/dg_screen.dart';
 import 'package:frontend/screens/DG/pages/employe_profil.dart';
 import 'package:frontend/utils/constants.dart';
@@ -115,13 +113,12 @@ class _ActionsEmployesState extends ConsumerState<ActionsEmployes> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fetchUserData();
   }
 
   void fetchUserData() async {
-    final currentUser = await FirebaseAuth.instance.currentUser;
+    final currentUser = FirebaseAuth.instance.currentUser;
     final querySnapshot = await FirebaseFirestore.instance
         .collection('admins')
         .doc(currentUser!.uid)

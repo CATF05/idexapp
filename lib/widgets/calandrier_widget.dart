@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/cours_model.dart';
-import 'package:frontend/models/emploi_du_temps.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalandarWidget extends StatefulWidget {
