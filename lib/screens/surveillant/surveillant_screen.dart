@@ -1,125 +1,182 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/common_pages/fiche_inscription.dart';
 import 'package:frontend/screens/DE/de_screen.dart';
+import 'package:frontend/screens/DE/pages/gestion_cours.dart';
+import 'package:frontend/screens/surveillant/pages/evenements.dart';
+import 'package:frontend/screens/surveillant/pages/notifications.dart';
+import 'package:frontend/screens/surveillant/pages/parametre.dart';
+import 'package:frontend/widgets/feature_card.dart';
+import 'package:frontend/widgets/side_bar.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 class SurveillantGeneralScreen extends StatelessWidget {
-  const SurveillantGeneralScreen({super.key});
+  SurveillantGeneralScreen({super.key});
+
+  final _controller = SidebarXController(selectedIndex: 0, extended: true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Row(
-          children: [
-            Icon(Icons.school, color: Colors.white), // Icône représentant la sécurité
-            SizedBox(width: 8),
-            Text(
-              'SAER NDIAYE',
-              style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      body: Row(
+        children: [
+          ExampleSidebarX(controller: _controller, home: SurveillantGeneralScreen(),),
+          Expanded(
+            child: SurveillantHome(
+              controller: _controller,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class SurveillantHome extends StatefulWidget {
+  final SidebarXController controller;
+  const SurveillantHome({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  @override
+  State<SurveillantHome> createState() => _SurveillantHomeState();
+}
+
+class _SurveillantHomeState extends State<SurveillantHome> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF4A90E2), Color(0xFF004080)], // Dégradé de bleu
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 40), // Espacement avant le tableau de bord
+            _buildDashboard(), // Tableau de bord du surveillant général
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                children: [
+                  FeatureCard(
+                    icon: Icons.book,
+                    title: 'Gestion des Cours',
+                    description: 'Gérer les cours et les affectations.',
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                          builder: (context) => GestionCours(home: SurveillantGeneralScreen(),)
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.assessment,
+                    title: 'Suivi des Événements',
+                    description: 'Suivi des événements importants et anomalies.',
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                          builder: (context) => Evenements(home: SurveillantGeneralScreen(),)
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.room,
+                    title: 'Gestion des Salles',
+                    description: 'Surveiller et gérer les affectations de salles.',
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context, MaterialPageRoute(
+                      //     builder: (context) => ()
+                      //   ),
+                      // );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.person_add,
+                    title: 'Enregistrement des Étudiants',
+                    description: 'Ajouter un nouvel étudiant au système.',
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                          builder: (context) => InscriptionEtudiantScreen(
+                            home: SurveillantGeneralScreen(),
+                          )
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.report,
+                    title: 'Rapports',
+                    description: 'Consulter les rapports des surveillants.',
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context, MaterialPageRoute(
+                      //     builder: (context) => ()
+                      //   ),
+                      // );
+                    },
+                  ),
+                  // Ajout des boutons pour l'enregistrement des étudiants et la création des badges
+                  FeatureCard(
+                    icon: Icons.card_membership,
+                    title: 'Création des Badges',
+                    description: 'Créer des badges électroniques pour les étudiants.',
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context, MaterialPageRoute(
+                      //     builder: (context) => ()
+                      //   ),
+                      // );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Naviguer vers la page des notifications
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DirecteurEtudesScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              // Naviguer vers les paramètres
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF4A90E2), Color(0xFF004080)], // Dégradé de bleu
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 40), // Espacement avant le tableau de bord
-              _buildDashboard(), // Tableau de bord du surveillant général
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  children: [
-                    SurveillantFeatureCard(
-                      icon: Icons.group,
-                      title: 'Gestion des Présences',
-                      description: 'Gérer et consulter les présences des employés.',
-                      onTap: () {
-                        // Naviguer vers la gestion des présences
-                      },
-                    ),
-                    SurveillantFeatureCard(
-                      icon: Icons.room,
-                      title: 'Gestion des Salles',
-                      description: 'Surveiller et gérer les affectations de salles.',
-                      onTap: () {
-                        // Naviguer vers la gestion des salles
-                      },
-                    ),
-                    SurveillantFeatureCard(
-                      icon: Icons.report,
-                      title: 'Rapports',
-                      description: 'Consulter les rapports des surveillants.',
-                      onTap: () {
-                        // Naviguer vers la page des rapports
-                      },
-                    ),
-                    SurveillantFeatureCard(
-                      icon: Icons.assessment,
-                      title: 'Suivi des Événements',
-                      description: 'Suivi des événements importants et anomalies.',
-                      onTap: () {
-                        // Naviguer vers la page de suivi des événements
-                      },
-                    ),
-                    // Ajout des boutons pour l'enregistrement des étudiants et la création des badges
-                    SurveillantFeatureCard(
-                      icon: Icons.person_add,
-                      title: 'Enregistrement des Étudiants',
-                      description: 'Ajouter un nouvel étudiant au système.',
-                      onTap: () {
-                        // Naviguer vers la page d'enregistrement des étudiants
-                      },
-                    ),
-                    SurveillantFeatureCard(
-                      icon: Icons.card_membership,
-                      title: 'Création des Badges',
-                      description: 'Créer des badges électroniques pour les étudiants.',
-                      onTap: () {
-                        // Naviguer vers la page de création des badges
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
+
+
+    // return AnimatedBuilder(
+    //   animation: widget.controller,
+    //   builder: (context, child) {
+    //     switch (widget.controller.selectedIndex) {
+    //       case 0:
+    //         return home(context, widget.controller);
+    //       case 1:
+    //         return const NotificationsSurveillant();
+    //       case 2:
+    //         return const ParametreSurveillant();
+    //       case 4:
+    //         return Container(); // Gestion des Présences
+    //       case 5:
+    //         return Container(); // Gestion des Salles
+    //       case 6:
+    //         return Container(); // Rapports
+    //       case 7:
+    //         return Container(); // Suivi des Événements
+    //       case 8:
+    //         return Container(); // Enregistrement des Étudiants
+    //       case 9:
+    //         return Container(); // Création des Badges
+    //       default:
+    //         return home(context, widget.controller);
+    //     }
+    //   },
+    // );
   }
 
   // Tableau de bord avec les informations clés du surveillant
@@ -203,46 +260,6 @@ class SurveillantGeneralScreen extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class SurveillantFeatureCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final VoidCallback onTap;
-
-  SurveillantFeatureCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(15),
-        splashColor: Colors.blueAccent,
-        child: ListTile(
-          leading: Icon(icon, size: 40, color: Colors.blueAccent),
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueAccent,
-            ),
-          ),
-          subtitle: Text(description, style: const TextStyle(color: Colors.black54)),
         ),
       ),
     );

@@ -4,8 +4,12 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   file_selector_linux
+  open_file_linux
   printing
+  screen_retriever_linux
   url_launcher_linux
+  window_manager
+  window_size
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

@@ -1,317 +1,381 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/DG/analyse.dart';
-import 'package:frontend/screens/DG/audit.dart';
-import 'package:frontend/screens/DG/bulletins_salaires.dart';
-import 'package:frontend/screens/DG/indicateurs.dart';
-import 'package:frontend/screens/DG/strategique_screen.dart';
-import 'package:frontend/screens/secretaire/fiche_inscription.dart';
+import 'package:frontend/models/event_model.dart';
+import 'package:frontend/models/facture_model.dart';
+import 'package:frontend/screens/DG/pages/employees.dart';
+import 'package:frontend/screens/DG/pages/notifications.dart';
+import 'package:frontend/screens/DG/pages/profs.dart';
+import 'package:frontend/common_pages/fiche_inscription.dart';
+import 'package:frontend/common_pages/factures.dart';
+import 'package:frontend/common_pages/students.dart';
+import 'package:frontend/screens/comptable/pages/transactions.dart';
+import 'package:frontend/screens/secretaire/pages/emploie_dutemps.dart';
+import 'package:frontend/widgets/dashboardItem.dart';
+import 'package:frontend/widgets/feature_card.dart';
+import 'package:frontend/widgets/side_bar.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 class DGScreen extends StatelessWidget {
-  const DGScreen({Key? key}) : super(key: key);
+  DGScreen({super.key});
+
+  final _controller = SidebarXController(selectedIndex: 0, extended: true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Row(
-          children: [
-            Icon(Icons.school, color: Colors.white),
-            SizedBox(width: 8),
-            Text(
-              'MAMADOU NDIAYE',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Naviguer vers les notifications
-            },
+      body: Row(
+        children: [
+          ExampleSidebarX(
+            controller: _controller,
+            home: DGScreen(),
+            notif: NotificationsDGScreen(),
           ),
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              // Naviguer vers les paramètres
-            },
+          const Expanded(
+            child: DirGeneralHome(),
           ),
         ],
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF4A90E2), Color(0xFF004080)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+    );
+  }
+}
+
+class DirGeneralHome extends StatefulWidget {
+  const DirGeneralHome({super.key});
+
+  @override
+  State<DirGeneralHome> createState() => _DirGeneralHomeState();
+}
+
+class _DirGeneralHomeState extends State<DirGeneralHome> {
+  int nbEtudiant = 0;
+  int nbFactureInvalide = 0;
+  int nbEvents = 0;
+  int nbEmployees = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    // Recupération etudiants
+    try {
+      final querySnapshot1 =
+          await FirebaseFirestore.instance.collection('students').get();
+      setState(() {
+        nbEtudiant = querySnapshot1.docs.length;
+      });
+    } catch (e) {
+      debugPrint('Erreur recupération etudiants: $e');
+    }
+
+    // Recupération evenements
+    try {
+      List<EventModel> events = <EventModel>[];
+      final querySnapshot2 =
+          await FirebaseFirestore.instance.collection('events').get();
+      for (var f in querySnapshot2.docs) {
+        events.add(EventModel.fromMap(f.data()));
+      }
+      setState(() {
+        nbEvents = events
+            .where((e) => (e.from.year == DateTime.now().year &&
+                e.from.month == DateTime.now().month &&
+                e.from.day == DateTime.now().day))
+            .length;
+      });
+    } catch (e) {
+      debugPrint('Erreur recupération evenements: $e');
+    }
+
+    // Recupération factures
+    try {
+      List<FactureModel> facturesInvalides = [];
+      final querySnapshot3 =
+          await FirebaseFirestore.instance.collection('factures').get();
+      nbFactureInvalide = querySnapshot3.docs.length;
+      if (querySnapshot3.docs.isNotEmpty) {
+        for (var f in querySnapshot3.docs) {
+          if (!FactureModel.fromMap(f.data()).isValidate) {
+            facturesInvalides.add(FactureModel.fromMap(f.data()));
+          }
+        }
+      }
+      setState(() {
+        nbFactureInvalide = facturesInvalides.length;
+      });
+    } catch (e) {
+      debugPrint('Erreur recupération factures: $e');
+    }
+
+    // Recupération employes
+    try {
+      final querySnapshot4 =
+          await FirebaseFirestore.instance.collection('employes').get();
+      setState(() {
+        nbEmployees = querySnapshot4.docs.length;
+      });
+    } catch (e) {
+      print('Erreur recupération employes: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF4A90E2), Color(0xFF004080)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 40),
-              _buildDashboard(),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  children: [
-                    DGFeatureCard(
-                      icon: Icons.person,
-                      title: 'Gestion des Employés',
-                      description: 'Gérer le personnel et les rôles.',
-                      onPressed: () {
-                        // Action pour la gestion des employés
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.account_balance_wallet,
-                      title: 'Rapports Financiers',
-                      description:
-                          'Consulter et générer les rapports financiers.',
-                      onPressed: () {
-                        // Action pour rapports financiers
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.insights,
-                      title: 'Analyses de Performance',
-                      description: 'Évaluer les performances de l\'entreprise.',
-                      onPressed: () {
-                        // Action pour analyses de performance
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AnalysePage()),
-                        );
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.schedule,
-                      title: 'Planification Stratégique',
-                      description: 'Planifier les stratégies à long terme.',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const StrategicPlanningPage()),
-                        );
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.analytics,
-                      title: 'Audit et Conformité',
-                      description: 'Vérifier les processus et la conformité.',
-                      onPressed: () {
-                        // Action pour audit et conformité
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AuditConformitePage()),
-                        );
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.file_copy,
-                      title: 'Bulletins de Salaire',
-                      description:
-                          'Gérer et consulter les bulletins de salaire.',
-                      onPressed: () {
-                        // Action pour bulletins de salaire
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BulletinPage()),
-                        );
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.bar_chart,
-                      title: 'Indicateurs Clés',
-                      description: 'Suivre les KPI de l\'entreprise.',
-                      onPressed: () {
-                        // Action pour indicateurs clés
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => IndicateurPage()),
-                        );
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.person_search,
-                      title: 'Gestion des Professeurs',
-                      description:
-                          'Gérer les informations et emplois des professeurs.',
-                      onPressed: () {
-                        // Action pour gestion des professeurs
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.book,
-                      title: 'Rapport Pédagogique',
-                      description:
-                          'Accéder aux rapports et statistiques pédagogiques.',
-                      onPressed: () {
-                        // Action pour rapport pédagogique
-                      },
-                    ),
-                    DGFeatureCard(
-                      icon: Icons.school,
-                      title: 'Fiche d\'inscription',
-                      description:
-                          'Creer des fiches d\'inscription pour les étudiants.',
-                      onPressed: () {
-                        // Action pour rapport pédagogique
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>RegistrationFormPage()),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildDashboard(),
+            Expanded(
+              child: ListView(
+                children: [
+                  FeatureCard(
+                    icon: Icons.analytics,
+                    title: 'Mon emploi du temps',
+                    description: 'Gérer et suivre mes rendez-vous et activités',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EmploiDuTemps(
+                            home: DGScreen(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.school,
+                    title: 'Fiche d\'inscription',
+                    description:
+                        'Creer des fiches d\'inscription pour les étudiants.',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InscriptionEtudiantScreen(
+                            home: DGScreen(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.person_search,
+                    title: 'Gestion des Professeurs',
+                    description:
+                        'Gérer les informations et emplois des professeurs.',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfsScreen(
+                            home: DGScreen(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // FeatureCard(
+                  //   icon: Icons.person,
+                  //   title: 'Gestion des Employés',
+                  //   description: 'Gérer le personnel et les rôles.',
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => EmployesScreen(
+                  //             home: DGScreen(),
+                  //           )),
+                  //     );
+                  //   },
+                  // ),
+                  FeatureCard(
+                    icon: Icons.account_balance_wallet,
+                    title: 'Rapports Financiers',
+                    description:
+                        'Consulter et générer les rapports financiers.',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TransactionPage(
+                            home: DGScreen(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // FeatureCard(
+                  //   icon: Icons.insights,
+                  //   title: 'Analyses de Performance',
+                  //   description: 'Évaluer les performances de l\'entreprise.',
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => AnalysePageScreen()),
+                  //     );
+                  //   },
+                  // ),
+                  // FeatureCard(
+                  //   icon: Icons.schedule,
+                  //   title: 'Planification Stratégique',
+                  //   description: 'Planifier les stratégies à long terme.',
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => StrategicPlanningScreen()),
+                  //     );
+                  //   },
+                  // ),
+                  // FeatureCard(
+                  //   icon: Icons.file_copy,
+                  //   title: 'Bulletins de Salaire',
+                  //   description: 'Gérer et consulter les bulletins de salaire.',
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => BulletinSalaireScreen()),
+                  //     );
+                  //   },
+                  // ),
+                  // FeatureCard(
+                  //   icon: Icons.bar_chart,
+                  //   title: 'Indicateurs Clés',
+                  //   description: 'Suivre les KPI de l\'entreprise.',
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => IndicateursScreen()),
+                  //     );
+                  //   },
+                  // ),
+                  FeatureCard(
+                    icon: Icons.book,
+                    title: 'Rapport Pédagogique',
+                    description:
+                        """Accéder aux rapports et 
+                        statistiques pédagogiques.""",
+                    onPressed: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => RapportPedagogiqueScreen()),
+                      // );
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   Widget _buildDashboard() {
-    return Card(
-      color: Colors.white.withOpacity(0.9),
-      elevation: 12,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Tableau de Bord',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _dashboardItem('Etudiants', '120/150'),
-                _dashboardItem('Rapports ', 'Mise à jour'),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _dashboardItem('Employés', '50'),
-                _dashboardItem('Nouveaux Inscrits', '25'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _dashboardItem(String title, String value) {
-    return GestureDetector(
-      onTap: () {
-        // Action possible ici
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: Colors.blueAccent.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blueAccent.withOpacity(0.2),
-              offset: const Offset(2, 4),
-              blurRadius: 6,
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DGFeatureCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final VoidCallback onPressed;
-
-  const DGFeatureCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.blueAccent,
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)), // Splash color
-        ),
-        child: ListTile(
-          leading: Icon(icon, size: 40, color: Colors.blue),
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      height: 220,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          Dashboarditem(
+            label: "Etudiants",
+            value: "$nbEtudiant",
+            color: Colors.cyan,
+            icon: Icons.school_outlined,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudentsScreen(
+                    home: DGScreen(),
+                  ),
+                ),
+              );
+            },
           ),
-          subtitle: Text(description, style: const TextStyle(color: Colors.black54)),
-        ),
+          Dashboarditem(
+            label: "Evénements de la journée",
+            value: "$nbEvents",
+            color: Colors.orangeAccent,
+            icon: Icons.schedule,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EmploiDuTemps(
+                    home: DGScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
+          // Dashboarditem(
+          //   label: "Professeurs",
+          //   value: "$nbProfs",
+          //   color: Colors.orangeAccent,
+          //   icon: Icons.person_search_outlined,
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //           builder: (context) => ProfsScreen(
+          //                 home: DGScreen(),
+          //               )),
+          //     );
+          //   },
+          // ),
+          Dashboarditem(
+            label: "Employées",
+            value: "$nbEmployees",
+            color: Colors.blueGrey,
+            icon: Icons.person_3_outlined,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EmployesScreen(
+                    home: DGScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
+          Dashboarditem(
+            label: "Factures non validées",
+            value: "$nbFactureInvalide",
+            color: Colors.pink,
+            icon: Icons.description,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FacturePage(
+                    home: DGScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

@@ -1,180 +1,203 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/screens/DE/attestation.dart';
-import 'package:frontend/screens/DE/certification.dart';
-import 'package:frontend/screens/DE/gestion_cours.dart';
-import 'package:frontend/screens/DE/planification.dart';
-import 'package:frontend/screens/DE/rapport_academique.dart';
-import 'package:frontend/screens/DE/bulletin_releves.dart';
-import 'package:frontend/screens/DG/dg_screen.dart';
+import 'package:frontend/common_pages/students.dart';
+import 'package:frontend/screens/DE/pages/attestation.dart';
+import 'package:frontend/screens/DE/pages/certification.dart';
+import 'package:frontend/screens/DE/pages/gestion_cours.dart';
+import 'package:frontend/screens/DE/pages/notifications.dart';
+import 'package:frontend/screens/DE/pages/parametre.dart';
+import 'package:frontend/screens/DE/pages/planification.dart';
+import 'package:frontend/screens/DE/pages/rapport_academique.dart';
+import 'package:frontend/screens/DE/pages/bulletin_releves.dart';
+import 'package:frontend/screens/DG/pages/profs.dart';
+import 'package:frontend/widgets/feature_card.dart';
+import 'package:frontend/widgets/side_bar.dart';
+import 'package:sidebarx/sidebarx.dart';
 
 class DirecteurEtudesScreen extends StatelessWidget {
-  const DirecteurEtudesScreen({super.key});
+  DirecteurEtudesScreen({super.key});
+
+  final _controller = SidebarXController(selectedIndex: 0, extended: true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Row(
-          children: [
-            Icon(Icons.school, color: Colors.white),
-            SizedBox(width: 8),
-            Text(
-              'OUSEYNOU DIANKHA',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      body: Row(
+        children: [
+          ExampleSidebarX(controller: _controller, home: DirecteurEtudesScreen(),),
+          Expanded(
+            child: DirEtudeHome(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DirEtudeHome extends StatefulWidget {
+  const DirEtudeHome({super.key});
+
+
+  @override
+  State<DirEtudeHome> createState() => _DirEtudeHomeState();
+}
+
+class _DirEtudeHomeState extends State<DirEtudeHome> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF4A90E2), Color(0xFF004080)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 40),
+            _buildDashboard(),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView(
+                children: [
+                  FeatureCard(
+                    icon: Icons.book,
+                    title: 'Gestion des Cours',
+                    description: 'Gérer les cours et les affectations.',
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                          builder: (context) => GestionCours(home: DirecteurEtudesScreen(),)
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.group_add,
+                    title: 'Gestion des Étudiants',
+                    description: 'Ajouter et gérer les étudiants.',
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                          builder: (context) => StudentsScreen(home: DirecteurEtudesScreen(),)
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.person_search,
+                    title: 'Gestion des Professeurs',
+                    description: 'Gérer les informations et emplois des professeurs.',
+                    onPressed: () {
+                      Navigator.push(
+                        context, MaterialPageRoute(
+                          builder: (context) => ProfsScreen(home: DirecteurEtudesScreen(),)
+                        ),
+                      );
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.bookmark,
+                    title: 'Bulletins et Relevés de Notes',
+                    description: 'Consulter et gérer les bulletins et relevés des étudiants.',
+                    onPressed: () {
+                      
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.schedule,
+                    title: 'Planification des Examens',
+                    description: 'Planifier et organiser les examens.',
+                    onPressed: () {
+                      // setState(() {
+                      //   controller.selectIndex(7);
+                      // });
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.assessment,
+                    title: 'Rapports Académiques',
+                    description: 'Consulter et générer des rapports académiques.',
+                    onPressed: () {
+                      // setState(() {
+                      //   controller.selectIndex(8);
+                      // });
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.file_copy,
+                    title: 'Attestation',
+                    description: 'Gérer et délivrer des attestations.',
+                    onPressed: () {
+                      // setState(() {
+                      //   controller.selectIndex(9);
+                      // });
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.verified,
+                    title: 'Certification',
+                    description: 'Gérer et délivrer des certifications.',
+                    onPressed: () {
+                      // setState(() {
+                      //   controller.selectIndex(10);
+                      // });
+                    },
+                  ),
+                  FeatureCard(
+                    icon: Icons.school,
+                    title: 'Diplômes',
+                    description: 'Gérer et délivrer des diplômes.',
+                    onPressed: () {
+                      // setState(() {
+                      //   controller.selectIndex(11);
+                      // });
+                    },
+                  ),
+                ],
               ),
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {
-              // Naviguer vers les notifications
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DGScreen()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              // Naviguer vers les paramètres
-              
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF4A90E2), Color(0xFF004080)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              const SizedBox(height: 40),
-              _buildDashboard(),
-              const SizedBox(height: 20),
-              Expanded(
-                child: ListView(
-                  children: [
-                    DirecteurFeatureCard(
-                      icon: Icons.group_add,
-                      title: 'Enregistrement des Étudiants',
-                      description: 'Ajouter et gérer les étudiants.',
-                      onPressed: () {
-                        // Action pour l'enregistrement des étudiants
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.badge,
-                      title: 'Création des Badges',
-                      description: 'Créer des badges électroniques pour les étudiants.',
-                      onPressed: () {
-                        // Action pour création de badges
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.book,
-                      title: 'Gestion des Cours',
-                      description: 'Gérer les cours et les affectations.',
-                      onPressed: () {
-                        // Action pour gestion des cours
-                        Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => GestionCoursPage()),
-              );
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.schedule,
-                      title: 'Planification des Examens',
-                      description: 'Planifier et organiser les examens.',
-                      onPressed: () {
-                        // Action pour planification des examens
-                        Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PlanificationExamensPage()),
-              );
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.assessment,
-                      title: 'Rapports Académiques',
-                      description: 'Consulter et générer des rapports académiques.',
-                      onPressed: () {
-                        // Action pour rapports académiques
-                        Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RapportsAcademiquePage()),
-              );
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.file_copy,
-                      title: 'Attestation',
-                      description: 'Gérer et délivrer des attestations.',
-                      onPressed: () {
-                        // Action pour gestion des attestations
-                      Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AttestationPage()),
-              );
-                        
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.verified,
-                      title: 'Certification',
-                      description: 'Gérer et délivrer des certifications.',
-                      onPressed: () {
-                        // Action pour gestion des certifications
-                        Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CertificatPage()),
-              );
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.school,
-                      title: 'Diplômes',
-                      description: 'Gérer et délivrer des diplômes.',
-                      onPressed: () {
-                        // Action pour gestion des diplômes
-                      },
-                    ),
-                    DirecteurFeatureCard(
-                      icon: Icons.bookmark,
-                      title: 'Bulletins et Relevés de Notes',
-                      description: 'Consulter et gérer les bulletins et relevés des étudiants.',
-                      onPressed: () {
-                        // Action pour consulter les bulletins
-                          Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => BulletinPage()),
-              );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
+    // return AnimatedBuilder(
+    //   animation: widget.controller,
+    //   builder: (context, child) {
+    //     switch (widget.controller.selectedIndex) {
+    //       case 0:
+    //         return home(context, widget.controller);
+    //       case 1:
+    //         return const NotificationsDirEtude();
+    //       case 2:
+    //         return const ParametreDirEtude();
+    //       case 4:
+    //         return Container(); // Enregistrement des Étudiants
+    //       case 5:
+    //         return Container(); // Création des Badges
+    //       case 6:
+    //         return GestionCoursPage();
+    //       case 7:
+    //         return PlanificationExamensPage();
+    //       case 8:
+    //         return RapportsAcademiquePage();
+    //       case 9:
+    //         return AttestationPage();
+    //       case 10:
+    //         return CertificatPage();
+    //       case 11:
+    //         return Container(); // Diplômes
+    //       case 12:
+    //         return BulletinPage();
+    //       default:
+    //         return home(context, widget.controller);
+    //     }
+    //   },
+    // );
   }
 
   Widget _buildDashboard() {
@@ -256,48 +279,6 @@ class DirecteurEtudesScreen extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class DirecteurFeatureCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final VoidCallback onPressed;
-
-  DirecteurFeatureCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white.withOpacity(0.9), // Uniformiser la couleur
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child:ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.blueAccent, backgroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), // Splash color
-        ),
-        child: ListTile(
-          leading: Icon(icon, size: 40, color: Colors.blueAccent),
-          title: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueAccent,
-            ),
-          ),
-          subtitle: Text(description, style: const TextStyle(color: Colors.black54)),
         ),
       ),
     );
